@@ -4,6 +4,7 @@ import numpy as np
 from SPFilter_MultinomialNB import MultinomialNB_class
 from SPFilter_BernoulliNB import BernoulliNB_class
 from SPFilter_GaussianNB import GaussianNB_class
+import re
 
 test_file_path = 'test-mails'
 train_file_path = 'train-mails'
@@ -34,8 +35,8 @@ def read_file(file):
         for line in f:
             line = line.strip()
             if line:
-                content += line
-    return content
+                content += line + " "
+    return content.strip()
 
 #count the total words
 def count_total_word(words):
@@ -81,9 +82,8 @@ def generate_feature(features, path, files):
     for file in files:
         singleWordMap = {}
         content = read_file(path+'/'+file)
-        content.replace("\n", "")
+        #content.replace("\n", "")
         contents = content.split(" ")
-        #print(contents)
         count_word(contents, singleWordMap)
         
         for key1 in singleWordMap.keys():
@@ -100,7 +100,7 @@ files = read_file_names(train_file_path)
 
 for i in range(len(files)):
     content = read_file(train_file_path+'/'+files[i])
-    content.replace("\n", "")
+    #content.replace("\n", "")
     contents = content.split(" ")
     count_total_word(contents)
 
