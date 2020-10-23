@@ -2,8 +2,10 @@ import os
 import math
 import numpy as np
 from SPFilter_MultinomialNB import MultinomialNB_class
+"""
 from SPFilter_BernoulliNB import BernoulliNB_class
 from SPFilter_GaussianNB import GaussianNB_class
+"""
 import re
 
 test_file_path = 'test-mails'
@@ -146,7 +148,7 @@ for i in range(len(files)):
 print("Multinomial Naive Bayes: ", float(error)/float(len(test_labels)))
 #Multinomial Naive Bayes end
 
-
+"""
 #Bernoulli Naive Bayes start
 BernoulliNB = BernoulliNB_class()
 BernoulliNB.BernoulliNB(train_features, train_labels)
@@ -168,3 +170,4 @@ for i in range(len(files)):
         error += 1
 print("Gaussian Naive Bayes: ", float(error)/float(len(test_labels)))
 #Gaussian Naive Bayes end
+"""
