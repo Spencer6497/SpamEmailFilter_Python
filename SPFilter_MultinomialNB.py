@@ -14,17 +14,23 @@ HAM = 0 #ham class label
 
 
 class MultinomialNB_class:
-    
+
     #multinomial naive bayes
+    # Class constructor
     def MultinomialNB(self, features, labels):
-            '''calculate class_log_prior
-		/**
-		 * loop over labels
-		 * if the value of the term in labels = 1 then ham++ 
-		 * if the value of the term in labels = 0 then spam++
-		 * class_log_prior[0] = Math.log(ham)
-		 * class_log_prior[1] = Math.log(spam)
-		 */
+        # calculate class_log_prior
+        ham = 0
+        spam = 0
+        for label in labels:
+            if label == 0.0:
+                ham += 1
+            elif label == 1.0:
+                spam += 1
+
+        class_log_prior[0] = float(math.log(ham))
+        class_log_prior[1] = float(math.log(spam))
+
+	'''
 		//calculate feature_log_prob
 		/**
 		 * nested loop over features
@@ -42,7 +48,8 @@ class MultinomialNB_class:
 		 * for j = most_common
 		 *     feature_log_prob[0] = Math.log(ham[i]/sum of ham)
 		 *     feature_log_prob[1] = Math.log(spam[i]/sum of spam)
-		 */'''
+		 */
+    '''
 
     #multinomial naive bayes prediction
     def MultinomialNB_predict(self, features):

@@ -10,11 +10,12 @@ import re
 
 test_file_path = 'test-mails'
 train_file_path = 'train-mails'
+# Max # of most important words
+most_common_word = 3000
 
 wordMap = {}
 commonMap = []
 
-most_common_word = 3000
 
  
 #avoid 0 terms in features
@@ -26,7 +27,7 @@ feature_log_prob = np.zeros((class_num, most_common_word)) #feature parameterize
 SPAM = 1 #spam class label
 HAM = 0 #ham class label
 
-#read file anmes in the specific file path
+#read file names in the specific file path
 def read_file_names(file_path):
     return os.listdir(file_path)
 
@@ -43,10 +44,13 @@ def read_file(file):
 #count the total words
 def count_total_word(words):
     for word in words:
+        # Skip word if it doesn't contain only alphabetic characters
         if not word[0].isalpha():
             continue
+        # If word doesn't appear in wordMap, add it with an occurrence of 1
         if not (word in wordMap.keys()):
             wordMap[word] = 1
+        # Otherwise, increment the count of the word in the map
         else:
             count = wordMap[word]
             wordMap[word] = count+1
@@ -65,10 +69,10 @@ def count_word(words, singleWordMap = {}):
 
 #find the most common words in files store in commonMap
 def most_common():
-    #sort the wordMap
+    #sort the wordMap by order of occurrence
     sort_wordMap = {k: v for k, v in sorted(wordMap.items(), key=lambda x: x[1], reverse=True)}
 
-    #add the most common words into commonMap
+    #add the most common words (<= 3000 words) into commonMap
     index = 0
     for key in sort_wordMap.keys():
         if index < most_common_word:
@@ -77,7 +81,7 @@ def most_common():
             break
         index += 1
 
-#generate features according to commonMap
+#generate features according to commonMap, fill out feature matrix
 def generate_feature(features, path, files):
     singleWordMap = {}
     file_index = 0
@@ -97,9 +101,10 @@ def generate_feature(features, path, files):
         file_index += 1
 
 
-#construct dictionary
+# Read in filenames of training set, store in array
 files = read_file_names(train_file_path)
 
+# Flatten email content into string, convert to list, count # words across all emails
 for i in range(len(files)):
     content = read_file(train_file_path+'/'+files[i])
     #content.replace("\n", "")
@@ -108,15 +113,18 @@ for i in range(len(files)):
 
 print("The maximum of most_common can be: ", len(wordMap))
 
+# Pick out the 3000 most common words from the generated wordMap and add them to commonMap
 most_common()
-
 
 #construct model
 #training feature matrix
+# Rows = # files, Cols = length of commonMap (3000)
 train_features = np.zeros((len(files), len(commonMap)))
+# Generate occurrence of each word per file, store to training feature matrix
 generate_feature(train_features, train_file_path, files)
 
 #training labels
+# Labels each email in the test set as either ham (0) or spam (1) for supervised learning
 train_labels = np.zeros(len(files))
 for i in range(len(files)//2, len(files)):
     train_labels[i] = 1
@@ -135,9 +143,10 @@ for i in range(len(files)//2, len(files)):
 
 
 #Multinomial Naive Bayes start
-#print(train_labels)
+print(train_labels)
 #train model
 MultinomialNB = MultinomialNB_class()
+# Pass training feature matrix as well as training labels to constructor
 MultinomialNB.MultinomialNB(train_features, train_labels)
 #test model
 classes = MultinomialNB.MultinomialNB_predict(test_features)
