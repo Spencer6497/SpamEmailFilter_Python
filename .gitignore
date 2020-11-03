@@ -2,7 +2,7 @@
 ### Python template
 
 # Documents
-*.docs
+*.docx
 *.pdf
 
 # Byte-compiled / optimized / DLL files
