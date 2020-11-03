@@ -30,26 +30,43 @@ class MultinomialNB_class:
         class_log_prior[0] = float(math.log(ham))
         class_log_prior[1] = float(math.log(spam))
 
-	'''
-		//calculate feature_log_prob
-		/**
-		 * nested loop over features
-		 * for row = features.length
-		 *     for col = most_common
-		 *         ham[col] + features[row][col]
-		 *         spam[col] + features[row][col]
-		 *         sum of ham
-		 *         sum of spam
-		 * for i = most_common
-		 *     ham[i] + smooth_alpha
-		 *     spam[i] + smooth_alpha
-		 * sum of ham += most_common*smooth_alpha
-		 * sum of spam += most_common*smooth_alpha
-		 * for j = most_common
-		 *     feature_log_prob[0] = Math.log(ham[i]/sum of ham)
-		 *     feature_log_prob[1] = Math.log(spam[i]/sum of spam)
-		 */
-    '''
+        '''
+            //calculate feature_log_prob
+            /**
+             * nested loop over features
+             * for row = features.length
+             *     for col = most_common
+             *         ham[col] + features[row][col]
+             *         spam[col] + features[row][col]
+             *         sum of ham
+             *         sum of spam
+             * for i = most_common
+             *     ham[i] + smooth_alpha
+             *     spam[i] + smooth_alpha
+             * sum of ham += most_common*smooth_alpha
+             * sum of spam += most_common*smooth_alpha
+             * for j = most_common
+             *     feature_log_prob[0] = Math.log(ham[i]/sum of ham)
+             *     feature_log_prob[1] = Math.log(spam[i]/sum of spam)
+             */
+        '''
+        for row in range(features.length):
+            for col in range(most_common_word):
+                ham[col] + features[row][col]
+                spam[col] + features[row][col]
+                ham += 1
+                spam += 1
+
+        for i in range(most_common_word):
+            ham[i] + smooth_alpha
+            spam[i] + smooth_alpha
+
+        ham += most_common_word * smooth_alpha
+        spam += most_common_word * smooth_alpha
+
+        for j in range(most_common_word):
+            feature_log_prob[0] = math.log(ham[i] / ham)
+            feature_log_prob[1] = math.log(spam[i] / spam)
 
     #multinomial naive bayes prediction
     def MultinomialNB_predict(self, features):
@@ -66,5 +83,15 @@ class MultinomialNB_class:
 		 * else SPAM
 		 * return  classes
 		 */'''
+        for i in range(len(features)):
+            for j in range(len(features)):
+                self.MultinomialNB(features[i], features[j])
+
+            ham_prob = feature_log_prob[0]
+            spam_prob = feature_log_prob[1]
+            if ham_prob > spam_prob:
+                classes[i] = HAM
+            else:
+                classes[i] = SPAM
 
         return classes

@@ -86,7 +86,7 @@ def generate_feature(features, path, files):
     singleWordMap = {}
     file_index = 0
     for file in files:
-        singleWordMap = {}
+        # singleWordMap = {}  # Map already created
         content = read_file(path+'/'+file)
         #content.replace("\n", "")
         contents = content.split(" ")

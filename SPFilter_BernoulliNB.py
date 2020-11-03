@@ -47,11 +47,12 @@ class BernoulliNB_class:
 
     #Bernoulli Naive Bayes prediction
     def BernoulliNB_predict(self, features):
-       ''' //convert features to l0-norm
+        ''' //convert features to l0-norm
 		/**
 		 * loop over features with i and j
 		 * features[i][j] > 0 ? 1 : 0;
-		 */'''
+		 */
+		 '''
         
         classes = np.zeros(len(features))
 
