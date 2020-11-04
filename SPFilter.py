@@ -86,7 +86,7 @@ def generate_feature(features, path, files):
     singleWordMap = {}
     file_index = 0
     for file in files:
-        # singleWordMap = {}  # Map already created
+        singleWordMap = {}  # Map already created
         content = read_file(path+'/'+file)
         #content.replace("\n", "")
         contents = content.split(" ")
@@ -143,7 +143,7 @@ for i in range(len(files)//2, len(files)):
 
 
 #Multinomial Naive Bayes start
-print(train_labels)
+#print(train_labels)
 #train model
 MultinomialNB = MultinomialNB_class()
 # Pass training feature matrix as well as training labels to constructor

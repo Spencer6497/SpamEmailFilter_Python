@@ -18,7 +18,6 @@ class MultinomialNB_class:
     #multinomial naive bayes
     # Class constructor
     def MultinomialNB(self, features, labels):
-        # calculate class_log_prior
         ham = 0
         spam = 0
         for label in labels:
@@ -27,46 +26,38 @@ class MultinomialNB_class:
             elif label == 1.0:
                 spam += 1
 
-        class_log_prior[0] = float(math.log(ham))
-        class_log_prior[1] = float(math.log(spam))
+        # calculate class_log_prior
+        class_log_prior[0] = math.log(ham/len(labels))
+        class_log_prior[1] = math.log(spam/len(labels))
 
-        '''
-            //calculate feature_log_prob
-            /**
-             * nested loop over features
-             * for row = features.length
-             *     for col = most_common
-             *         ham[col] + features[row][col]
-             *         spam[col] + features[row][col]
-             *         sum of ham
-             *         sum of spam
-             * for i = most_common
-             *     ham[i] + smooth_alpha
-             *     spam[i] + smooth_alpha
-             * sum of ham += most_common*smooth_alpha
-             * sum of spam += most_common*smooth_alpha
-             * for j = most_common
-             *     feature_log_prob[0] = Math.log(ham[i]/sum of ham)
-             *     feature_log_prob[1] = Math.log(spam[i]/sum of spam)
-             */
-        '''
-        for row in range(features.length):
+        # Calculate feature_log_prob
+        # Create ham and spam arrays
+        hamArray = np.zeros(most_common_word)
+        spamArray = np.zeros(most_common_word)
+
+        # Create sum of ham and spam
+        sumHam = 0
+        sumSpam = 0
+
+        for row in range(len(features)):
             for col in range(most_common_word):
-                ham[col] + features[row][col]
-                spam[col] + features[row][col]
-                ham += 1
-                spam += 1
+                if row < (len(labels)//2):
+                    hamArray[col] += features[row][col]
+                    sumHam += 1
+                else:
+                    spamArray[col] += features[row][col]
+                    sumSpam += 1
 
         for i in range(most_common_word):
-            ham[i] + smooth_alpha
-            spam[i] + smooth_alpha
+            hamArray[i] += smooth_alpha
+            spamArray[i] += smooth_alpha
 
-        ham += most_common_word * smooth_alpha
-        spam += most_common_word * smooth_alpha
+        sumHam += most_common_word * smooth_alpha
+        sumSpam += most_common_word * smooth_alpha
 
         for j in range(most_common_word):
-            feature_log_prob[0] = math.log(ham[i] / ham)
-            feature_log_prob[1] = math.log(spam[i] / spam)
+            feature_log_prob[0][j] = math.log(hamArray[j] / sumHam)
+            feature_log_prob[1][j] = math.log(spamArray[j] / sumSpam)
 
     #multinomial naive bayes prediction
     def MultinomialNB_predict(self, features):
@@ -74,24 +65,26 @@ class MultinomialNB_class:
 
         ham_prob = 0.0
         spam_prob = 0.0
-        '''/**
-		 * nested loop over features with i and j
-		 * calculate ham_prob and spam_prob
-		 * add ham_prob and spam_prob with class_log_prior
-		 * if ham_prob > spam_prob
-		 * HAM
-		 * else SPAM
-		 * return  classes
-		 */'''
-        for i in range(len(features)):
-            for j in range(len(features)):
-                self.MultinomialNB(features[i], features[j])
 
-            ham_prob = feature_log_prob[0]
-            spam_prob = feature_log_prob[1]
+        # Iterate through files
+        for i in range(len(features)):
+            # Store temporary sums for iterative purposes
+            hamTempSum = 0
+            spamTempSum = 0
+            # Iterate through words
+            for j in range(len(features[i])):
+                # Compute elementwise product
+                hamTempSum += feature_log_prob[0][j] * features[i][j]
+                spamTempSum += feature_log_prob[1][j] * features[i][j]
+
+            # Calculate ham_prob and spam_prob
+            ham_prob = hamTempSum + class_log_prior[0]
+            spam_prob = spamTempSum + class_log_prior[1]
+
+            # If it is more than likely ham, classify it as such and vice versa
             if ham_prob > spam_prob:
-                classes[i] = HAM
+                classes[i] = 0
             else:
-                classes[i] = SPAM
+                classes[i] = 1
 
         return classes
