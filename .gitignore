@@ -2,8 +2,8 @@
 ### Python template
 
 # Documents
-*.docx
-*.pdf
+#*.docx
+#*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
