@@ -6,7 +6,7 @@ import numpy as np
 most_common_word = 3000
 #avoid 0 terms in features
 smooth_alpha = 1.0
-class_num =2 #we have only two classes: ham and spam
+class_num = 2 #we have only two classes: ham and spam
 class_log_prior = [0.0, 0.0]#probability for two classes
 feature_log_prob = np.zeros((class_num, most_common_word))#feature parameterized probability
 SPAM = 1 #spam class label
